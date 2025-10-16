@@ -404,6 +404,7 @@ public class AdminController {
 
 	@GetMapping("/add-admin")
 	public String loadAdminAdd() {
+
 		return "/admin/add_admin";
 	}
 

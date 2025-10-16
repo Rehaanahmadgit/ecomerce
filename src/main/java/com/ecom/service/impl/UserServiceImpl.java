@@ -168,6 +168,9 @@ public class UserServiceImpl implements UserService {
 		user.setFailedAttempt(0);
 
 		String encodePassword = passwordEncoder.encode(user.getPassword());
+		System.out.println(user.getRole());
+		System.out.println(user.getPassword());
+		System.out.println(user.getEmail());
 		user.setPassword(encodePassword);
 		UserDtls saveUser = userRepository.save(user);
 		return saveUser;
