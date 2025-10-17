@@ -151,7 +151,7 @@ public class AdminController {
 			session.setAttribute("errorMsg", "something wrong on server");
 		}
 
-		return "redirect:/admin/category";
+		return "redirect:admin/category";
 	}
 
 	@GetMapping("/loadEditCategory/{id}")
@@ -436,7 +436,7 @@ public class AdminController {
 
 	@GetMapping("/profile")
 	public String profile() {
-		return "/admin/profile";
+		return "admin/profile";
 	}
 
 	@PostMapping("/update-profile")
