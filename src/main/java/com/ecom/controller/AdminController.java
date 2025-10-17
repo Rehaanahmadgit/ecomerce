@@ -403,8 +403,8 @@ public class AdminController {
 	}
 
 	@GetMapping("/add-admin")
-	public String loadAdminAdd() {
-
+	public String loadAdminAdd(Model m) {
+		m.addAttribute("message", "Hello Admin!");
 		return "/admin/add_admin";
 	}
 
