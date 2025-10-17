@@ -301,7 +301,7 @@ public class AdminController {
 		}
 		m.addAttribute("userType",type);
 		m.addAttribute("users", users);
-		return "/admin/users";
+		return "admin/users";
 	}
 
 	@GetMapping("/updateSts")
@@ -333,7 +333,7 @@ public class AdminController {
 		m.addAttribute("isFirst", page.isFirst());
 		m.addAttribute("isLast", page.isLast());
 
-		return "/admin/orders";
+		return "admin/orders";
 	}
 
 	@PostMapping("/update-order-status")
@@ -405,7 +405,7 @@ public class AdminController {
 	@GetMapping("/add-admin")
 	public String loadAdminAdd(Model m) {
 		m.addAttribute("message", "Hello Admin!");
-		return "/admin/add_admin";
+		return "admin/add_admin";
 	}
 
 	@PostMapping("/save-admin")
