@@ -43,18 +43,30 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
 	{
-//		http.csrf(csrf->csrf.disable()).cors(cors->cors.disable())
-//				.authorizeHttpRequests(req->req.requestMatchers("/user/**").hasRole("USER")
-//				.requestMatchers("/admin/**").hasRole("ADMIN")
-//				.requestMatchers("/**").permitAll())
-//				.formLogin(form->form.loginPage("/signin")
-//						.loginProcessingUrl("/login")
-////						.defaultSuccessUrl("/")
-//						.failureHandler(authenticationFailureHandler)
-//						.successHandler(authenticationSuccessHandler))
-//				.logout(logout->logout.permitAll());
-		
+		http
+				.csrf(csrf -> csrf.disable())
+				.cors(cors -> cors.disable())
+				.authorizeHttpRequests(req -> req
+						// ✅ TEMPORARY: Allow access to all admin endpoints
+						.requestMatchers("/admin/**").permitAll()
+
+						// Keep user endpoints restricted
+						.requestMatchers("/user/**").hasRole("USER")
+
+						// Public pages allowed
+						.requestMatchers("/**").permitAll()
+				)
+				.formLogin(form -> form
+						.loginPage("/signin")
+						.loginProcessingUrl("/login")
+						.failureHandler(authenticationFailureHandler)
+						.successHandler(authenticationSuccessHandler)
+						.permitAll()
+				)
+				.logout(logout -> logout.permitAll());
+
 		return http.build();
 	}
+	}
 
-}
+
