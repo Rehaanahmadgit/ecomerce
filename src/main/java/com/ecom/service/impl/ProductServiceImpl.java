@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import com.ecom.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,11 @@ import com.ecom.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+ImageService imageService;
+
+	public ProductServiceImpl(ImageService imageService) {
+		this.imageService = imageService;
+	}
 
 	@Autowired
 	private ProductRepository productRepository;
@@ -63,17 +69,22 @@ public class ProductServiceImpl implements ProductService {
 	public Product updateProduct(Product product, MultipartFile image) {
 
 		Product dbProduct = getProductById(product.getId());
+		try {
+			String imageUrl = imageService.upload(image, "ecommerce_products");
+			String imageName = image.isEmpty() ? dbProduct.getImage() : imageUrl;
+			dbProduct.setTitle(product.getTitle());
+			dbProduct.setDescription(product.getDescription());
+			dbProduct.setCategory(product.getCategory());
+			dbProduct.setPrice(product.getPrice());
+			dbProduct.setStock(product.getStock());
+			dbProduct.setImage(imageName);
+			dbProduct.setIsActive(product.getIsActive());
+			dbProduct.setDiscount(product.getDiscount());}catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		String imageName = image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
 
-		dbProduct.setTitle(product.getTitle());
-		dbProduct.setDescription(product.getDescription());
-		dbProduct.setCategory(product.getCategory());
-		dbProduct.setPrice(product.getPrice());
-		dbProduct.setStock(product.getStock());
-		dbProduct.setImage(imageName);
-		dbProduct.setIsActive(product.getIsActive());
-		dbProduct.setDiscount(product.getDiscount());
+
 
 		// 5=100*(5/100); 100-5=95
 		Double disocunt = product.getPrice() * (product.getDiscount() / 100.0);

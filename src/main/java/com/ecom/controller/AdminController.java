@@ -9,6 +9,8 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
 
+import com.ecom.repository.ProductRepository;
+import com.ecom.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -28,11 +30,6 @@ import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
-import com.ecom.service.CartService;
-import com.ecom.service.CategoryService;
-import com.ecom.service.OrderService;
-import com.ecom.service.ProductService;
-import com.ecom.service.UserService;
 import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 
@@ -62,7 +59,12 @@ public class AdminController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	private final ImageService imageService;
 
+	public AdminController( ImageService imageService) {
+
+		this.imageService = imageService;
+	}
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
 		if (p != null) {
@@ -112,7 +114,8 @@ public class AdminController {
 			HttpSession session) throws IOException {
 
 		String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
-		category.setImageName(imageName);
+		String imageUrl = imageService.upload(file, "ecommerce_products");
+		category.setImageName(imageUrl);
 
 		Boolean existCategory = categoryService.existCategory(category.getName());
 
@@ -165,7 +168,8 @@ public class AdminController {
 			HttpSession session) throws IOException {
 
 		Category oldCategory = categoryService.getCategoryById(category.getId());
-		String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
+		String imageUrl = imageService.upload(file, "ecommerce_products");
+		String imageName = file.isEmpty() ? oldCategory.getImageName() : imageUrl;
 
 		if (!ObjectUtils.isEmpty(category)) {
 
@@ -201,8 +205,8 @@ public class AdminController {
 			HttpSession session) throws IOException {
 
 		String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
-
-		product.setImage(imageName);
+		String imageUrl = imageService.upload(image , "ecommerce_products");
+		product.setImage(imageUrl);
 		product.setDiscount(0);
 		product.setDiscountPrice(product.getPrice());
 		Product saveProduct = productService.saveProduct(product);
@@ -412,8 +416,9 @@ public class AdminController {
 	public String saveAdmin(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile file, HttpSession session)
 			throws IOException {
 
-		String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
-		user.setProfileImage(imageName);
+//		String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+		String imageUrl = imageService.upload(file , "ecommerce_products");
+		user.setProfileImage(imageUrl);
 		UserDtls saveUser = userService.saveAdmin(user);
 
 		if (!ObjectUtils.isEmpty(saveUser)) {

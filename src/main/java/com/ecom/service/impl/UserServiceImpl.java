@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.ecom.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,14 +24,18 @@ import com.ecom.util.AppConstant;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+	private final ImageService imageService;
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	@Override
+    public UserServiceImpl(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
+    @Override
 	public UserDtls saveUser(UserDtls user) {
 		user.setRole("ROLE_USER");
 		user.setIsEnable(true);
@@ -127,10 +132,16 @@ public class UserServiceImpl implements UserService {
 	public UserDtls updateUserProfile(UserDtls user, MultipartFile img) {
 
 		UserDtls dbUser = userRepository.findById(user.getId()).get();
+		try {
+			String imageUrl = imageService.upload(img, "ecommerce_products");
+			if (!img.isEmpty()) {
+				dbUser.setProfileImage(imageUrl);
+			}}catch (Exception e) {
+			System.out.println(e.getMessage());
 
-		if (!img.isEmpty()) {
-			dbUser.setProfileImage(img.getOriginalFilename());
 		}
+
+
 
 		if (!ObjectUtils.isEmpty(dbUser)) {
 

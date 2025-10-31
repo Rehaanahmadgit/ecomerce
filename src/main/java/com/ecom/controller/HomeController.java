@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collector;
 
+import com.ecom.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -31,10 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.model.UserDtls;
-import com.ecom.service.CartService;
-import com.ecom.service.CategoryService;
-import com.ecom.service.ProductService;
-import com.ecom.service.UserService;
 import com.ecom.util.CommonUtil;
 
 import io.micrometer.common.util.StringUtils;
@@ -60,6 +57,11 @@ public class HomeController {
 @Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
+	public HomeController(ImageService imageService) {
+		this.imageService = imageService;
+	}
+
+	ImageService imageService;
 	@Autowired
 	private CartService cartService;
 
@@ -148,7 +150,8 @@ public class HomeController {
 		if (existsEmail) {
 			session.setAttribute("errorMsg", "Email already exist");
 		} else {
-			String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+			String imageUrl = imageService.upload(file, "ecommerce_products");
+			String imageName = file.isEmpty() ? "default.jpg" : imageUrl;
 			user.setProfileImage(imageName);
 			UserDtls saveUser = userService.saveUser(user);
 
@@ -250,5 +253,6 @@ public class HomeController {
 		return "product";
 
 	}
+
 
 }
