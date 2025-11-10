@@ -141,7 +141,7 @@ public class AdminController {
 			}
 		}
 
-		return "redirect:/admin/category";
+		return "redirect:admin/category";
 	}
 
 	@GetMapping("/deleteCategory/{id}")
@@ -226,7 +226,7 @@ public class AdminController {
 			session.setAttribute("errorMsg", "something wrong on server");
 		}
 
-		return "redirect:/admin/loadAddProduct";
+		return "redirect:admin/loadAddProduct";
 	}
 
 	@GetMapping("/products")
