@@ -4,6 +4,36 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<!--	<script>-->
+<!--		function startVoiceSearch() {-->
+<!--			// Check if browser supports speech-->
+<!--			if (!('webkitSpeechRecognition' in window)) {-->
+<!--				alert("Voice search is not supported in your browser.");-->
+<!--				return;-->
+<!--			}-->
+
+<!--			const recognition = new webkitSpeechRecognition();-->
+<!--			recognition.lang = "en-US";  // you can use hi-IN for Hindi-->
+<!--			recognition.continuous = false;-->
+<!--			recognition.interimResults = false;-->
+
+<!--			recognition.start();-->
+
+<!--			recognition.onresult = function(event) {-->
+<!--				const result = event.results[0][0].transcript;-->
+<!--				document.getElementById("searchInput").value = result;-->
+
+<!--				setTimeout(() => {-->
+<!--					document.getElementById("searchForm").submit();-->
+<!--				}, 500);-->
+
+<!--			};-->
+
+<!--			recognition.onerror = function(event) {-->
+<!--				alert("Could not recognize voice. Try again.");-->
+<!--			};-->
+<!--		}-->
+<!--	</script>-->
 </head>
 <body>
 	<section>
@@ -11,9 +41,14 @@
 		<div class="container-fluid bg-primary p-4 mt-5 ">
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
-					<form action="/products" method="get">
+					<form id="searchForm" action="/products" method="get">
 						<div class="input-group">
-							<input type="text" class="form-control" name="ch">
+							<input type="text" class="form-control" name="ch" id="searchInput">
+
+							<button type="button" class="btn btn-light text-dark ms-1" onclick="startVoiceSearch()">
+								? Voice
+							</button>
+
 							<button class="btn btn-light text-dark ms-3 col-md-2">
 								<i class="fa-solid fa-magnifying-glass"></i> Search
 							</button>
@@ -22,7 +57,36 @@
 				</div>
 			</div>
 
-		</div>
+		</div> <script>
+		function startVoiceSearch() {
+			if (!('webkitSpeechRecognition' in window)) {
+				alert("Voice search is not supported in your browser.");
+				return;
+			}
+
+			const recognition = new webkitSpeechRecognition();
+			recognition.lang = "en-US";
+			recognition.continuous = false;
+			recognition.interimResults = false;
+
+			recognition.start();
+			recognition.onresult = function(event) {
+				let result = event.results[0][0].transcript;
+
+				// Clean unwanted punctuation
+				result = result.replace(/[.,!?]/g, "").trim();
+
+				document.getElementById("searchInput").value = result;
+
+				setTimeout(() => {
+					document.getElementById("searchForm").submit();
+				}, 900);
+			};
+			recognition.onerror = function(event) {
+				alert("Could not recognize voice. Try again.");
+			};
+		}
+	</script>
 
 
 		<div class="container-fluid mt-1">
@@ -96,9 +160,10 @@
 										</a></li>
 
 										<li th:each="i:${#numbers.sequence(1,totalPages)}"
-											class="page-item" th:classappend="${pageNo+1==i}?'active':''"
-											]]><a class="page-link"
-											th:href="@{'/products?pageNo='+${i-1}}">[[${i}]]</a></li>
+											class="page-item"
+											th:classappend="${pageNo+1==i}?'active':''">
+											<a class="page-link" th:href="@{'/products?pageNo='+${i-1}}">[[${i}]]</a>
+										</li>
 
 										<li class="page-item"
 											th:classappend="${isLast} ? 'disabled':''"><a

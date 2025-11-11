@@ -42,10 +42,14 @@
 									</div>
 
 								</div>
+								<div th:if="${session.errorMsg_sms}">
+									<p style="color:red" >[[${session.errorMsg_sms}]]></p>
+								</div>
 
-								<div class="mb-3">
+								<div
+									 class="mb-3">
 									<label class="form-label">Email</label> <input required
-										class="form-control" name="email" type="email">
+										class="form-control" name="email"  type="email">
 								</div>
 
 

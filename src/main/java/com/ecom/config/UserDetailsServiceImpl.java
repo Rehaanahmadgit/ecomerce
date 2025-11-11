@@ -1,5 +1,7 @@
 package com.ecom.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,7 +12,9 @@ import com.ecom.model.UserDtls;
 import com.ecom.repository.UserRepository;
 
 @Service
+@Slf4j
 public class
+
 UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
@@ -18,6 +22,7 @@ UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
 
 		UserDtls user = userRepository.findByEmail(username);
 

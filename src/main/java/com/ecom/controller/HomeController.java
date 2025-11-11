@@ -98,6 +98,18 @@ public class HomeController {
 
 	@GetMapping("/register")
 	public String register() {
+//
+//		String email []= { "drop@gmail.com","delete@gmail.com","create@gmail.com"};
+//
+//
+//
+//		for(String s : email) {
+//			if (s.equalsIgnoreCase(userDtls.getEmail())) {
+//
+//				m.addAttribute("errorMsg", "you email is not good use at the same time");
+//				return "register";
+//			}
+//		}
 		return "register";
 	}
 
@@ -144,8 +156,16 @@ public class HomeController {
 	@PostMapping("/saveUser")
 	public String saveUser(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile file, HttpSession session)
 			throws IOException {
+		String email []= { "drop@gmail.com","delete@gmail.com","create@gmail.com"};
+		for(String s : email) {
+			if (s.equalsIgnoreCase(user.getEmail())) {
 
+				session.setAttribute("errorMsg_sms", "you email is not good use at the same time");
+return "redirect:/register";
+			}
+		}
 		Boolean existsEmail = userService.existsEmail(user.getEmail());
+
 
 		if (existsEmail) {
 			session.setAttribute("errorMsg", "Email already exist");
